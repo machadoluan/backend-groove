@@ -14,11 +14,11 @@ import { TwilioModule } from './twilio/twilio.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: '132.255.58.65',
-      port: 1324,
-      username: 'luan',
-      password: '428766',
-      database: 'newyork',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT, 10),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       entities: [User],
       synchronize: true
     }),
