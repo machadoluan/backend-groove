@@ -22,7 +22,7 @@ export class AuthController {
 
         const userGuilds = discordUser.guilds.map(guild => guild.name);
         if (!userGuilds.includes('New York City')) {
-            return res.redirect('http://localhost:4200/?error=not_in_guild');
+            return res.redirect('https://front-groove.vercel.app/?error=not_in_guild');
         }
 
         return res.redirect(redirectTo);
@@ -40,7 +40,7 @@ export class AuthController {
         const steamHex = req.user.steamHex;
 
     
-        return res.redirect(`http://localhost:4200/cadastro?tokenS=${steamHex}`);
+        return res.redirect(`https://front-groove.vercel.app/cadastro?tokenS=${steamHex}`);
     }
     @Post('create')
     async createUser(@Body() dadosCadastro: any) {

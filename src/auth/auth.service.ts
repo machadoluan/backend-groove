@@ -21,7 +21,7 @@ export class AuthService {
         let user = await this.userRepository.findOne({ where: { discordId } })
 
         if (!user) {
-            return { redirectTo: `http://localhost:4200/cadastro?tokend=${discordId}`, user: null };
+            return { redirectTo: `https://front-groove.vercel.app/cadastro?tokend=${discordId}`, user: null };
         }
 
         const payload = {
@@ -35,7 +35,7 @@ export class AuthService {
         }
         const token = this.jwtService.sign({ ...payload })
 
-        return { redirectTo: `http://localhost:4200/?token=${token}` }
+        return { redirectTo: `https://front-groove.vercel.app/?token=${token}` }
     }
 
     async createUser(dadosCadastro: any) {
