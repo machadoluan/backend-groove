@@ -28,12 +28,16 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/typeorm": "^11.0.0",
     "dotenv": "^16.4.7",
+    "express-session": "^1.18.1",
     "mysql": "^2.18.1",
+    "openid-client": "^6.1.7",
     "passport": "^0.7.0",
     "passport-discord": "^0.1.4",
     "passport-jwt": "^4.0.1",
+    "passport-steam": "^1.0.18",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "twilio": "^5.4.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

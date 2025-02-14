@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Res, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,8 +12,11 @@ export class AuthService {
         private jwtService: JwtService
     ) { }
 
+    discordUser: any
+
     async findOrCreaterUser(discordUser: any) {
-        const { discordId, email } = discordUser;
+        this.discordUser = discordUser
+        const discordId = this.discordUser.discordId
 
         let user = await this.userRepository.findOne({ where: { discordId } })
 
@@ -35,17 +38,23 @@ export class AuthService {
         return { redirectTo: `http://localhost:4200/?token=${token}` }
     }
 
-
-    async create(dadosCadastro) {
-        console.log(dadosCadastro)
+    async createUser(dadosCadastro: any) {
         if (!dadosCadastro.discordId) {
-            throw new Error('O campo discordID é obrigatório');
+            throw new Error('O campo discord é obrigatorio')
         }
 
 
         const user = this.userRepository.create(dadosCadastro)
         await this.userRepository.save(user)
 
-        return { sucess: true }
+        const payload = {
+            username: this.discordUser.username,
+            avatar: this.discordUser.avatar,
+            ...user
+        }
+
+        const token = this.jwtService.sign({ ...payload })
+
+        return { sucess: 'Usuario cadastrado com sucesso!', token }
     }
 }

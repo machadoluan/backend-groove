@@ -1,5 +1,5 @@
 // auth/auth.controller.ts
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
@@ -28,9 +28,22 @@ export class AuthController {
         return res.redirect(redirectTo);
     }
 
+    @Get('steam')
+    @UseGuards(AuthGuard('steam'))
+    async steamAuth() {
+        // Inicia o fluxo de autenticação da Steam
+    }
 
-    @Post('cadastro')
-    async cadastrarUsuario(@Body() dadosCadastro: any) {
-        return this.authService.create(dadosCadastro)
+    @Get('steam/callback')
+    @UseGuards(AuthGuard('steam'))
+    async steamAuthRedirect(@Req() req, @Res() res: Response) {
+        const steamHex = req.user.steamHex;
+
+    
+        return res.redirect(`http://localhost:4200/cadastro?tokenS=${steamHex}`);
+    }
+    @Post('create')
+    async createUser(@Body() dadosCadastro: any) {
+        return this.authService.createUser(dadosCadastro)
     }
 }

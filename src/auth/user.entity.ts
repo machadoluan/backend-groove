@@ -22,4 +22,7 @@ export class User {
 
   @Column({ nullable: true })
   indicacao: string;
+
+  @Column({ unique: true, nullable: true })
+  license: string;
 }

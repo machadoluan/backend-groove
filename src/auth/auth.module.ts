@@ -7,22 +7,22 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DiscordStrategy } from './discord.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
+import { SteamStrategy } from './steam.strategy';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    PassportModule.register({defaultStrategy: 'discord'}),
+    PassportModule.register({ session: false }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: {expiresIn: configService.get<number>('JWT_EXPIRATION_TIME')}
+        signOptions: { expiresIn: configService.get<number>('JWT_EXPIRATION_TIME') }
       }),
       inject: [ConfigService]
     }),
-    ConfigModule.forRoot(),
   ],
-  providers: [AuthService, DiscordStrategy],
+  providers: [AuthService, DiscordStrategy, SteamStrategy],
   controllers: [AuthController]
 })
-export class AuthModule {}
+export class AuthModule { }
