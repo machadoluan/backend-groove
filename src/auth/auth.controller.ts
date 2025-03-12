@@ -3,10 +3,13 @@ import { Body, Controller, Get, Post, Put, Query, Req, Res, UseGuards } from '@n
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) { }
+    constructor(private readonly authService: AuthService, private readonly jwtService: JwtService) { }
+
+
 
     @Get('discord')
     @UseGuards(AuthGuard('discord'))
@@ -38,8 +41,8 @@ export class AuthController {
     async steamAuthRedirect(@Req() req, @Res() res: Response) {
         const steamHex = req.user.steamHex;
 
-
-        return res.redirect(`${process.env.URL_FONTEND}/cadastro?tokenS=${steamHex}`);
+        const tempToken = this.jwtService.sign({steamHex}) 
+        return res.redirect(`${process.env.URL_FONTEND}/cadastro?tokenS=${tempToken}`);
     }
     @Post('create')
     async createUser(@Body() dadosCadastro: any) {

@@ -21,7 +21,8 @@ export class AuthService {
         let user = await this.userRepository.findOne({ where: { discordId } })
 
         if (!user) {
-            return { redirectTo: `${process.env.URL_FONTEND}/cadastro?tokend=${discordId}`, user: null };
+            const tempToken = this.jwtService.sign({ discordId })
+            return { redirectTo: `${process.env.URL_FONTEND}/cadastro?tokend=${tempToken}`, user: null };
         }
 
         const payload = {
