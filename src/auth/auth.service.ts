@@ -21,7 +21,7 @@ export class AuthService {
         let user = await this.userRepository.findOne({ where: { discordId } })
 
         if (!user) {
-            return { redirectTo: `https://front-groove.vercel.app/cadastro?tokend=${discordId}`, user: null };
+            return { redirectTo: `${process.env.URL_FONTEND}/cadastro?tokend=${discordId}`, user: null };
         }
 
         const payload = {
@@ -35,7 +35,7 @@ export class AuthService {
         }
         const token = this.jwtService.sign({ ...payload })
 
-        return { redirectTo: `https://front-groove.vercel.app/?token=${token}` }
+        return { redirectTo: `${process.env.URL_FONTEND}/?token=${token}` }
     }
 
     async createUser(dadosCadastro: any) {
@@ -44,17 +44,58 @@ export class AuthService {
         }
 
 
-        const user = this.userRepository.create(dadosCadastro)
+        const existingUser = await this.userRepository.findOne({ where: { license: dadosCadastro.license } })
+        if (existingUser) {
+            throw new UnauthorizedException({ message: 'Usuário cadastrado em outro discord, entre em contato com a nossa equipe!' });
+
+        }
+
+
+        const userCompleted = {
+            ...dadosCadastro,
+            username: this.discordUser.username,
+            avatar: this.discordUser.avatar,
+        }
+
+
+        const user = this.userRepository.create(userCompleted)
+
+
         await this.userRepository.save(user)
 
         const payload = {
-            username: this.discordUser.username,
-            avatar: this.discordUser.avatar,
             ...user
         }
 
         const token = this.jwtService.sign({ ...payload })
 
         return { sucess: 'Usuario cadastrado com sucesso!', token }
+    }
+
+    async updateUser(dadosUpdate: any) {
+
+        if (!dadosUpdate.discordId) {
+            throw new Error('O campo discord é obrigatorio')
+        }
+
+        const user = await this.userRepository.findOne({ where: { discordId: dadosUpdate.discordId } })
+
+        if (!user) {
+            throw new Error('Usuario não encontrado!')
+        }
+
+        Object.assign(user, dadosUpdate)
+
+        await this.userRepository.save(user)
+
+
+        console.log(user)
+        const payload = {
+            ...user
+        }
+
+        const token = this.jwtService.sign({ ...payload })
+
+        return { sucess: 'Usuario alterado com sucesso!', token };
     }
 }

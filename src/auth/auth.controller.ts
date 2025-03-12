@@ -1,5 +1,5 @@
 // auth/auth.controller.ts
-import { Body, Controller, Get, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
@@ -21,8 +21,8 @@ export class AuthController {
         const { redirectTo } = await this.authService.findOrCreaterUser(discordUser);
 
         const userGuilds = discordUser.guilds.map(guild => guild.name);
-        if (!userGuilds.includes('New York City')) {
-            return res.redirect('https://front-groove.vercel.app/?error=not_in_guild');
+        if (!userGuilds.includes(process.env.SERVER_NAME)) {
+            return res.redirect(`${process.env.URL_FONTEND}/?error=not_in_guild`);
         }
 
         return res.redirect(redirectTo);
@@ -31,7 +31,6 @@ export class AuthController {
     @Get('steam')
     @UseGuards(AuthGuard('steam'))
     async steamAuth() {
-        // Inicia o fluxo de autenticação da Steam
     }
 
     @Get('steam/callback')
@@ -39,11 +38,16 @@ export class AuthController {
     async steamAuthRedirect(@Req() req, @Res() res: Response) {
         const steamHex = req.user.steamHex;
 
-    
-        return res.redirect(`https://front-groove.vercel.app/cadastro?tokenS=${steamHex}`);
+
+        return res.redirect(`${process.env.URL_FONTEND}/cadastro?tokenS=${steamHex}`);
     }
     @Post('create')
     async createUser(@Body() dadosCadastro: any) {
         return this.authService.createUser(dadosCadastro)
+    }
+
+    @Put('update')
+    async updateUser(@Body() dadosUpdate: any) {
+        return this.authService.updateUser(dadosUpdate)
     }
 }

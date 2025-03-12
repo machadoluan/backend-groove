@@ -19,7 +19,6 @@ export class AccountService {
         });
 
         if (!user) {
-            // Se não encontrar o usuário, lançar um erro
             throw new NotFoundException('Usuário não encontrado');
         }
 
@@ -56,5 +55,26 @@ export class AccountService {
         const characters = await this.userRepository.query(charactersQuery, [user.license]);
 
         return characters;
+    }
+
+    async releaseAllowList(discordId: string) {
+        const user = await this.userRepository.findOne({
+            where: { discordId },
+        });
+
+        if (!user) {
+            throw new NotFoundException('Usuário não encontrado');
+        }
+
+        const updateWhitelistQuery = `
+            UPDATE accounts
+            SET whitelist = 1
+            WHERE license = ?
+        `;
+
+        await this.userRepository.query(updateWhitelistQuery, [user.license]);
+
+        // Retorna uma mensagem de sucesso ou outro dado relevante
+        return { message: 'Whitelist liberada com sucesso' };
     }
 }

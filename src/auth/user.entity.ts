@@ -14,6 +14,12 @@ export class User {
   @Column()
   email: string;
 
+  @Column()
+  avatar: string;
+
+  @Column()
+  username: string;
+
   @Column({ nullable: true })
   telefone: string;
 

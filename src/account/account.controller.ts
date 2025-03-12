@@ -11,7 +11,7 @@ export class AccountController {
     async getCharacters(@Param('discordId') discordId: string) {
         const characters = this.accountService.getCharactersByLicense(discordId)
 
-        if (!characters ) {
+        if (!characters) {
             throw new NotFoundException('Nenhum character encontrado para este usuário');
         }
 
@@ -21,11 +21,21 @@ export class AccountController {
     async getAccount(@Param('discordId') discordId: string) {
         const characters = this.accountService.getAccoutnsByLicense(discordId)
 
-        if (!characters ) {
-            throw new NotFoundException('Nenhum character encontrado para este usuário');
+        if (!characters) {
+            throw new NotFoundException('Nenhuma conta encontrada');
         }
 
         return characters
     }
 
+    @Post('releaseAllowList/:discordId')
+    async releaseAllowList(@Param('discordId') discordId: string) {
+        const characters = this.accountService.releaseAllowList(discordId)
+
+        if (!characters) {
+            throw new NotFoundException('Nenhuma conta encontrada');
+        }
+
+        return characters
+    }
 }

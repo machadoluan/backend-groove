@@ -9,16 +9,23 @@ import { ConfigModule } from '@nestjs/config';
 import { TwilioService } from './twilio/twilio.service';
 import { TwilioController } from './twilio/twilio.controller';
 import { TwilioModule } from './twilio/twilio.module';
+import { DiscordService } from './discord/discord.service';
+import { DiscordModule } from './discord/discord.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT, 10),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
+      // host: process.env.DB_HOST,
+      // port: parseInt(process.env.DB_PORT, 10),
+      // username: process.env.DB_USERNAME,
+      // password: process.env.DB_PASSWORD,
+      // database: process.env.DB_DATABASE,
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      database: 'newyork',
       entities: [User],
       synchronize: true
     }),
@@ -28,9 +35,11 @@ import { TwilioModule } from './twilio/twilio.module';
       isGlobal: true
     }),
     TwilioModule,
+    DiscordModule,
+    PaymentModule,
 
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, DiscordService],
 })
 export class AppModule { }
