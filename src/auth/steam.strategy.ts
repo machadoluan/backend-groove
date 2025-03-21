@@ -7,9 +7,9 @@ import { AuthService } from './auth.service';
 export class SteamStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authService: AuthService) {
     super({
-      returnURL: 'http://localhost:3000/auth/steam/callback',
-      realm: 'http://localhost:3000/',
-      apiKey: 'A23E3C6293E948573B110F16B2F0EEDB',
+      returnURL: `${process.env.API_BACKEND}/auth/steam/callback`,
+      realm: process.env.API_BACKEND,
+      apiKey: 'B2F35E4FB70854041930A183E17D2571',
       profile: true,
     });
   }

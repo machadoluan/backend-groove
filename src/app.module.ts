@@ -28,14 +28,15 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         transport: {
-          host: 'smtp.gmail.com',
+          host: configService.get<string>('SMTP_HOST'),
+          port: parseInt(configService.get<string>('SMTP_PORT')),
           secure: true,
           auth: {
             user: configService.get<string>('EMAIL'),
             pass: configService.get<string>('EMAIL_PASSWORD'),
           },
         },
-        defaults: { from: '"Equipe Suporte" <suporte@example.com>' },
+        defaults: { from: '"Equipe Suporte" <contato@groovegg.com.br>' },
         template: {
           dir: join(__dirname, 'mails'), // ⬅️ Caminho correto para os templates
           adapter: new HandlebarsAdapter(),
