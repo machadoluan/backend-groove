@@ -40,8 +40,8 @@ export class AuthService {
     }
 
     async createUser(dadosCadastro: any) {
-        if (!dadosCadastro.discordId) {
-            throw new Error('O campo discord é obrigatorio')
+        if (!dadosCadastro.discordId || !dadosCadastro.license) {
+            throw new Error('O campo discord e license é obrigatório.')
         }
 
 
