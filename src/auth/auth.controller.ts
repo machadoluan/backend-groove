@@ -23,8 +23,8 @@ export class AuthController {
         const discordUser = req.user;
         const { redirectTo } = await this.authService.findOrCreaterUser(discordUser);
 
-        const userGuilds = discordUser.guilds.map(guild => guild.name);
-        if (!userGuilds.includes(process.env.SERVER_NAME)) {
+        const userGuilds = discordUser.guilds.map(guild => guild.id);
+        if (!userGuilds.includes(process.env.SERVER_ID)) {
             return res.redirect(`${process.env.URL_FONTEND}/?error=not_in_guild`);
         }
 

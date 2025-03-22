@@ -26,12 +26,9 @@ export class AuthService {
         }
 
         const payload = {
-            nome: user.nome,
+            ...user,
             username: discordUser.username,
             discordId: discordUser.discordId,
-            email: user.email,
-            dataNascimento: user.dataNascimento,
-            telefone: user.telefone,
             avatar: discordUser.avatar,
         }
         const token = this.jwtService.sign({ ...payload })
@@ -40,8 +37,8 @@ export class AuthService {
     }
 
     async createUser(dadosCadastro: any) {
-        if (!dadosCadastro.discordId || !dadosCadastro.license) {
-            throw new Error('O campo discord e license é obrigatório.')
+        if (!dadosCadastro.discordId) {
+            throw new Error('O campo discord é obrigatorio')
         }
 
 
@@ -56,6 +53,8 @@ export class AuthService {
             ...dadosCadastro,
             username: this.discordUser.username,
             avatar: this.discordUser.avatar,
+            fila: true
+            
         }
 
 
