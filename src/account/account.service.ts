@@ -10,6 +10,8 @@ export class AccountService {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
+        private jwtService: JwtService
+
     ) { }
 
     async getCharactersByLicense(discordId: string) {
@@ -66,15 +68,26 @@ export class AccountService {
             throw new NotFoundException('Usuário não encontrado');
         }
 
-        const updateWhitelistQuery = `
-            UPDATE accounts
-            SET whitelist = 1
-            WHERE license = ?
-        `;
+        // const updateWhitelistQuery = `
+        //     UPDATE accounts
+        //     SET whitelist = 1
+        //     WHERE license = ?
+        // `;
 
-        await this.userRepository.query(updateWhitelistQuery, [user.license]);
+        // await this.userRepository.query(updateWhitelistQuery, [user.license]);
+
+        user.allowList = true
+
+        await this.userRepository.save(user)
 
         // Retorna uma mensagem de sucesso ou outro dado relevante
-        return { message: 'Whitelist liberada com sucesso' };
+
+
+        const payload = {
+            ...user
+        }
+        const token = this.jwtService.sign({ ...payload })
+
+        return { success: 'Whitelist liberada com sucesso', token };
     }
 }
