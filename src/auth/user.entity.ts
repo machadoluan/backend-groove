@@ -31,4 +31,10 @@ export class User {
 
   @Column({ unique: true, nullable: true })
   license: string;
+  
+  @Column({ nullable: true })
+  allowList: boolean;
+
+  @Column({ nullable: true })
+  fila: boolean;
 }
