@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { throwError } from 'rxjs';
 import { User } from 'src/auth/user.entity';
 import { Repository } from 'typeorm';
 
@@ -82,12 +83,22 @@ export class AccountService {
 
         // Retorna uma mensagem de sucesso ou outro dado relevante
 
+        return { success: 'Whitelist liberada com sucesso' };
+    }
 
-        const payload = {
-            ...user
+
+
+
+    async verifyAllowList(license: string) {
+        if (!license) {
+            throw new UnauthorizedException('License inválida!');
         }
-        const token = this.jwtService.sign({ ...payload })
 
-        return { success: 'Whitelist liberada com sucesso', token };
+
+        const user = await this.userRepository.findOne({ where: { license: license } })
+
+        if (!user) throw new NotFoundException('Usuario não encontrado.')
+
+        return user.allowList
     }
 }

@@ -38,4 +38,9 @@ export class AccountController {
 
         return characters
     }
+
+    @Post('virifyAllowlist')
+    async verifyAllowlist(@Body('license') license: string) {
+        return this.accountService.verifyAllowList(license)
+    }
 }
