@@ -5,6 +5,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Request } from 'express';
+import * as url from 'url';
 
 @Injectable()
 export class FrontendSecretGuard implements CanActivate {
@@ -12,10 +13,19 @@ export class FrontendSecretGuard implements CanActivate {
     const request: Request = context.switchToHttp().getRequest();
 
     const method = request.method;
-    const url = request.route?.path || request.url;
+    const parsedUrl = url.parse(request.url).pathname; // remove query params
 
-    // EXCEÇÃO: permitir GET /
-    if (method === 'GET' && (url === '/' || url === '')) {
+    const publicRoutes = [
+      { method: 'GET', path: '/' },
+      { method: 'GET', path: '/auth/discord' },
+      { method: 'GET', path: '/auth/discord/redirect' },
+    ];
+
+    const isPublic = publicRoutes.some(
+      (route) => route.method === method && parsedUrl === route.path,
+    );
+
+    if (isPublic) {
       return true;
     }
 
