@@ -18,6 +18,7 @@ export class FrontendSecretGuard implements CanActivate {
     const publicRoutes = [
       { method: 'GET', path: '/' },
       { method: 'GET', path: '/auth/discord' },
+      { method: 'GET', path: '/auth/discord/callback' },
       { method: 'GET', path: '/auth/discord/redirect' },
     ];
 
