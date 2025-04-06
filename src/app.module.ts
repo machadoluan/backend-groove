@@ -16,6 +16,10 @@ import { EmailVerifyModule } from './email-verify/email-verify.module';
 import { join } from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { TicketService } from './ticket/ticket.service';
+import { TicketModule } from './ticket/ticket.module';
+import { Ticket } from './ticket/entity/ticket.entity';
+import { TicketMessage } from './ticket/entity/ticket-message.entity';
 
 
 @Module({
@@ -55,7 +59,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User],
+      entities: [User, Ticket, TicketMessage],
       synchronize: true
     }),
     AuthModule,
@@ -64,6 +68,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
     DiscordModule,
     PaymentModule,
     EmailVerifyModule,
+    TicketModule,
 
   ],
   controllers: [AppController],

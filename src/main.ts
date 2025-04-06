@@ -3,7 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
-import { FrontendSecretGuard } from './guards/frontend-secret.guard';
+import { ValidationPipe } from '@nestjs/common';
+// import { FrontendSecretGuard } from './guards/frontend-secret.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,7 +22,7 @@ async function bootstrap() {
   // app.use(passport.session());
 
   // Injeção manual do guard global
-  app.useGlobalGuards(new FrontendSecretGuard());
+  // app.useGlobalGuards(new FrontendSecretGuard());
 
   await app.listen(process.env.PORT ?? 3000);
 }
