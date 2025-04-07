@@ -4,10 +4,12 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import { ValidationPipe } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 // import { FrontendSecretGuard } from './guards/frontend-secret.guard';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.set('trust proxy', true);
 
   app.enableCors({
     origin: ['https://groovegg.com.br', 'http://localhost:4200'],
@@ -15,6 +17,7 @@ async function bootstrap() {
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'X-App-Secret'],
   });
+
 
   // Se usar cookies/sessão, deixe aqui o session & passport, se necessário:
   // app.use(session({ ... }));

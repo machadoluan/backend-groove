@@ -16,6 +16,9 @@ export class Ticket {
   @Column()
   userId: number;
 
+  @Column()
+  idDenunciado: number;
+
   @Column({ nullable: true })
   adminId?: number;
 
@@ -30,6 +33,9 @@ export class Ticket {
 
   @Column({ type: 'text' })
   url: string;
+
+  @Column({ nullable: true })
+  personagem?: string;
 
   @OneToMany(() => TicketMessage, (message) => message.ticket, { cascade: true })
   messages: TicketMessage[];

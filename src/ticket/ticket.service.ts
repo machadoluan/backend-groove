@@ -12,11 +12,11 @@ export class TicketService {
     private ticketRepository: Repository<Ticket>,
     @InjectRepository(TicketMessage)
     private ticketMessageRepository: Repository<TicketMessage>,
-  ) {}
+  ) { }
 
-  async createTicket(userId: number, description: string, subject: string, motivo: string, url: string): Promise<Ticket> {
+  async createTicket(userId: number, description: string, subject: string, motivo: string, url: string, personagem: string, idDenunciado: number): Promise<Ticket> {
     // Cria o ticket sem a descrição, pois ela será a primeira mensagem
-    const ticket = this.ticketRepository.create({ userId, status: TicketStatus.OPEN, subject: subject, motivo: motivo, url: url });
+    const ticket = this.ticketRepository.create({ userId, status: TicketStatus.OPEN, subject: subject, motivo: motivo, url: url, idDenunciado: idDenunciado, personagem: personagem });
     const savedTicket = await this.ticketRepository.save(ticket);
 
     // Cria a primeira mensagem com a descrição fornecida

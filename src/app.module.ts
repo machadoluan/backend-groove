@@ -6,8 +6,6 @@ import { AuthModule } from './auth/auth.module';
 import { User } from './auth/user.entity';
 import { AccountModule } from './account/account.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TwilioService } from './twilio/twilio.service';
-import { TwilioController } from './twilio/twilio.controller';
 import { TwilioModule } from './twilio/twilio.module';
 import { DiscordService } from './discord/discord.service';
 import { DiscordModule } from './discord/discord.module';
@@ -20,6 +18,8 @@ import { TicketService } from './ticket/ticket.service';
 import { TicketModule } from './ticket/ticket.module';
 import { Ticket } from './ticket/entity/ticket.entity';
 import { TicketMessage } from './ticket/entity/ticket-message.entity';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { AnalyticsLog } from './analytics/analytics-log.entity';
 
 
 @Module({
@@ -54,12 +54,13 @@ import { TicketMessage } from './ticket/entity/ticket-message.entity';
     
     TypeOrmModule.forRoot({
       type: 'mysql',
+      charset: 'utf8mb4',
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT, 10),
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User, Ticket, TicketMessage],
+      entities: [User, Ticket, TicketMessage, AnalyticsLog],
       synchronize: true
     }),
     AuthModule,
@@ -69,6 +70,7 @@ import { TicketMessage } from './ticket/entity/ticket-message.entity';
     PaymentModule,
     EmailVerifyModule,
     TicketModule,
+    AnalyticsModule,
 
   ],
   controllers: [AppController],

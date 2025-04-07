@@ -9,9 +9,9 @@ export class TicketController {
 
   // Criação de ticket (a descrição se tornará a primeira mensagem do chat)
   @Post()
-  async createTicket(@Body() body: { userId: number; description: string, subject: string, motivo: string, url: string }): Promise<Ticket> {
-    const { userId, description, subject, motivo, url } = body;
-    return this.ticketService.createTicket(userId, description, subject, motivo, url);
+  async createTicket(@Body() body: { userId: number; description: string, subject: string, motivo: string, url: string, idDenunciado: number, personagem: string }): Promise<Ticket> {
+    const { userId, description, subject, motivo, url, idDenunciado, personagem } = body;
+    return this.ticketService.createTicket(userId, description, subject, motivo, url, personagem, idDenunciado );
   }
 
   // Listagem de tickets por usuário
