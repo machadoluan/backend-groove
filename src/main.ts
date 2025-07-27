@@ -27,6 +27,6 @@ async function bootstrap() {
   // Injeção manual do guard global
   // app.useGlobalGuards(new FrontendSecretGuard());
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3001);
 }
 bootstrap();

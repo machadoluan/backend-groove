@@ -7,12 +7,28 @@ export class PaymentController {
     constructor(private readonly paymentService: PaymentService) { }
 
     @Post('checkout')
-    async createCheckout(@Body() body: { amount: number; description: string }) {
+    gerarCheckout(@Body() body: { nome: string; preco: number; quantidade: number, license: string }) {
+        return this.paymentService.gerarLinkPagamento(body);
+    }
 
-        if (!body.amount || isNaN(body.amount)) {
-            return { error: 'O valor do pagamento é inválido.' };
+    @Post('webhook')
+    async receberWebhook(@Body() body: any) {
+        if (body.status !== 'paid') return { ignored: true };
+
+        await this.paymentService.registrarPagamento(body);
+
+        const { items } = body;
+
+        const license = items?.[0]?.license;
+
+        if (!license) {
+            console.error('❌ License não encontrada no item');
+            return { error: 'Missing license' };
         }
 
-        return this.paymentService.createCheckout(body.amount, body.description);
+
+
+        return { received: true };
     }
+
 }

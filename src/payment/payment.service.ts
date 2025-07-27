@@ -1,54 +1,59 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Pagamento } from './pagamento.entity';
+import { Repository } from 'typeorm';
 
 
 @Injectable()
 export class PaymentService {
-    constructor(private configService: ConfigService
+    constructor(private configService: ConfigService,
+        @InjectRepository(Pagamento)
+        private pagamentoRepo: Repository<Pagamento>,
     ) { }
-    private readonly PAGBANK_URL = this.configService.get<string>('PAGBANK_URL');
-    private readonly PAGBANK_TOKEN = this.configService.get<string>('PAGBANK_TOKEN');
 
-    async createCheckout(amount: number, itemName: string) {
-        const transactionId = Math.random().toString(36).substr(2, 9);
+    private readonly usuarioInfinity = 'luanmachadojs'; // seu usuário InfinityPay
+    private readonly redirectUrl = 'https://groovegg.com.br/obrigado';
 
-        const data = {
-            amount: {
-                value: amount * 100, // PagSeguro usa centavos
-                currency: "BRL",
-            },
-            itemName,
-            redirect_url: "https://seusite.com/retorno",
-            items: [
+
+    gerarLinkPagamento(item: { nome: string; preco: number; quantidade: number; license: string }) {
+        const { nome, preco, quantidade, license } = item;
+
+        const items = encodeURIComponent(
+            JSON.stringify([
                 {
-                    reference_id: transactionId,
-                    name: itemName,
-                    quantity: 1,
-                    unit_amount: amount * 100,
+                    name: nome,
+                    price: preco,
+                    quantity: quantidade,
+                    // 👇 Incluindo a license embutida como "meta"
+                    license: license,
                 },
-            ],
-        };
+            ])
+        );
 
-        try {
-            const response = await axios.post(this.PAGBANK_URL, data, {
-                headers: {
-                    Authorization: `Bearer ${this.PAGBANK_TOKEN}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+        const checkoutUrl = `https://checkout.infinitepay.io/${this.usuarioInfinity}?items=${items}&redirect_url=${encodeURIComponent(this.redirectUrl)}`;
 
-            // Buscar o link correto de pagamento
-            const payLink = response.data.links.find(link => link.rel === 'PAY')?.href;
-
-            if (!payLink) {
-                throw new Error('Nenhum link de pagamento encontrado');
-            }
-
-            return { checkoutUrl: payLink };
-        } catch (error) {
-            console.error('Erro ao criar checkout:', error.response?.data || error.message);
-            throw new Error('Erro ao criar checkout: ' + error.message);
-        }
+        return { checkoutUrl };
     }
+
+
+    async registrarPagamento(body: any) {
+        const { status, payment_id, customer, items, total_amount } = body;
+
+        if (status !== 'paid') return;
+
+        const novoPagamento = this.pagamentoRepo.create({
+            paymentId: payment_id,
+            email: customer.email,
+            nome: customer.name,
+            valor: total_amount,
+            itens: JSON.stringify(items),
+            status,
+        });
+
+        await this.pagamentoRepo.save(novoPagamento);
+    }
+
+    
 }
