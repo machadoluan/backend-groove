@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/co
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { throwError } from 'rxjs';
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/entitys/user.entity';
 import { Repository } from 'typeorm';
 
 

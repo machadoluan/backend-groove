@@ -6,7 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DiscordStrategy } from './discord.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user.entity';
+import { User } from '../entitys/user.entity';
 import { SteamStrategy } from './steam.strategy';
 
 @Module({

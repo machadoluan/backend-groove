@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { User } from './auth/user.entity';
+import { User } from './entitys/user.entity';
 import { AccountModule } from './account/account.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TwilioModule } from './twilio/twilio.module';
@@ -19,7 +19,12 @@ import { TicketModule } from './ticket/ticket.module';
 import { Ticket } from './ticket/entity/ticket.entity';
 import { TicketMessage } from './ticket/entity/ticket-message.entity';
 import { AnalyticsModule } from './analytics/analytics.module';
-import { AnalyticsLog } from './analytics/analytics-log.entity';
+import { AnalyticsLog } from './entitys/analytics-log.entity';
+import { VipsDimaModule } from './vips-dima/vips-dima.module';
+import { Cards } from './vips-dima/cards.enitity';
+import { NovidadesService } from './novidades/novidades.service';
+import { NovidadesModule } from './novidades/novidades.module';
+import { Novidades } from './entitys/novidades.entity';
 
 
 @Module({
@@ -52,16 +57,20 @@ import { AnalyticsLog } from './analytics/analytics-log.entity';
       inject: [ConfigService], // Adicionei a injeção aqui também!
     }),
     
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      charset: 'utf8mb4',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT, 10),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
-      entities: [User, Ticket, TicketMessage, AnalyticsLog],
-      synchronize: true
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get<string>('DATABASE_HOST'),
+        port: configService.get<number>('DATABASE_PORT'),
+        username: configService.get<string>('DATABASE_USER'),
+        password: 'Machado@Luan121107#',
+        database: configService.get<string>('DATABASE_NAME'),
+        entities: [User, Ticket, TicketMessage, AnalyticsLog, Cards, Novidades],
+        autoLoadEntities: true,
+        synchronize: true,
+      }),
+      inject: [ConfigService],
     }),
     AuthModule,
     AccountModule,
@@ -71,6 +80,8 @@ import { AnalyticsLog } from './analytics/analytics-log.entity';
     EmailVerifyModule,
     TicketModule,
     AnalyticsModule,
+    VipsDimaModule,
+    NovidadesModule,
 
   ],
   controllers: [AppController],

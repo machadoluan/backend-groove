@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AnalyticsLog } from './analytics-log.entity';
+import { AnalyticsLog } from '../entitys/analytics-log.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
