@@ -12,7 +12,7 @@ async function bootstrap() {
   app.set('trust proxy', true);
 
   app.enableCors({
-    origin: ['https://groovegg.com.br', 'http://localhost:4200'],
+    origin: ['https://groovegg.com.br', 'http://localhost:4200', 'http://localhost:61159'],
     credentials: true,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'X-App-Secret'],

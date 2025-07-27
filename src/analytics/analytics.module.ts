@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AnalyticsLog } from './analytics-log.entity';
+import { AnalyticsLog } from '../entitys/analytics-log.entity';
 import { AnalyticsService } from './analytics.service';
 import { AnalyticsController } from './analytics.controller';
 
