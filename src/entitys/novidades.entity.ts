@@ -11,9 +11,12 @@ export class Novidades {
     @Column({ nullable: true })
     fotoLink: string; // Este campo deve ser único e do tipo string
 
-    @Column()
+    @Column({nullable: true})
     videoLink: string;
 
     @Column({ nullable: true })
     video: boolean;
+
+    @Column({ nullable: true })
+    visibilidade: boolean;
 }
